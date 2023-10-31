@@ -1,52 +1,44 @@
-async function fetchJobs() {
-  try {
-    const response = await fetch(
-      'https://jsearch.p.rapidapi.com/search?query=Python%20developer%20in%20Texas%2C%20USA&page=1&num_pages=1',
-      {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': 'ab11d6ea47mshaa5a1960c286d92p141310jsn20556f981e65',
-          'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
-        }
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching jobs:', error);
-    return [];
+const jobs = document.getElementById('jobs')
+
+const url = 'https://jsearch.p.rapidapi.com/search?query=All&page=1&num_pages=10';
+const options = {
+  method: 'GET',
+  headers: {
+    'X-RapidAPI-Key': 'ab11d6ea47mshaa5a1960c286d92p141310jsn20556f981e65',
+    'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
   }
+};
+
+async function fetchData() {
+  const response = await fetch(url, options);
+  const result = await response.json();
+
+  var jobDetails = `
+  <div class="grids">
+  <ul class="job-list">`;
+  result.data.forEach(e => {
+      jobDetails += `<li class="job-item">
+       <li class="name">${e.employer_name}</li>
+       <li class="logo"><img src="${e.employer_logo}" class="imgs"/></li>
+       <li class="job-title">${e.job_title}</li>
+       <p class="graph">${e.job_description}</p>
+       <button class="buttons" data-url="${e.job_apply_link}">Apply for the Job</button>
+       </li>`;
+  });
+
+  jobDetails += `</ul>
+  </div>`;
+  document.getElementById("jobs").innerHTML = jobDetails;
+
+  // Attach a click event listener to the "Apply for the Job" buttons.
+  const applyButtons = document.querySelectorAll('.buttons');
+  applyButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      // Retrieve the job's URL from the button's data-url attribute and redirect the user.
+      const jobURL = button.getAttribute('data-url');
+      window.location.href = jobURL;
+    });
+  });
 }
 
-
-
-fetchJobs().then(data => {
-  // Check if data.results exists and is an array
-  const jobs = Array.isArray(data.results) ? data.results : [];
-
-  const container = document.getElementById('jobs-container');
-
-  jobs.forEach(job => {
-      const card = document.createElement('div');
-      card.classList = 'job-card';
-
-      const title = document.createTextNode('Title: ' + job.title);
-      card.appendChild(title);
-
-      const description = document.createTextNode('Description: ' + job.description);
-      card.appendChild(description);
-
-      const location = document.createTextNode('Location: ' + job.location);
-      card.appendChild(location);
-
-      container.appendChild(card);
-  });
-}).catch(error => {
-  console.error('Error:', error);
-});
-
-
-fetchJobs();
+fetchData();
