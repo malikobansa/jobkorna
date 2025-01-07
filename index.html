@@ -4,35 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JobKorna | Home</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body>
-    <header>
-       <ul>
-        <li><a href="#">JobKorna</a></li>
-
-        <li class="list">
-            <li class="logBtn"><a href="#">Log In</a></li>
-            <li class="signBtn"><a href="#"><button>Sign Up</button></a></li>
-        </li>
-       </ul>
+<body class="font-sans antialiased bg-gray-100">
+    <nav class="bg-blue-600 text-white p-4">
+        <ul class="flex justify-center space-x-6">
+            <li><a href="#" class="hover:underline">Home</a></li>
+            <li><a href="#" class="hover:underline">Find Job</a></li>
+            <li><a href="#" class="hover:underline">Employers</a></li>
+            <li><a href="#" class="hover:underline">Candidates</a></li>
+            <li><a href="#" class="hover:underline">Customer Support</a></li>
+        </ul>
+    </nav>
+    <header class="bg-white shadow-md">
+       <div class="container mx-auto flex flex-wrap items-center justify-between p-4">
+        <div class="logo text-blue-600 text-2xl font-bold">
+            <a href="#">JobKorna</a>
+        </div>
+        <div class="search-bar flex items-center space-x-2">
+            <i class="fa-solid fa-magnifying-glass text-gray-500"></i>
+            <input type="search" name="search" id="searchQuery" placeholder="Enter Job Keyword" class="border rounded-lg p-2 w-full md:w-96">
+        </div>
+        <div class="auth-buttons flex space-x-4">
+            <a href="/pages/auth/login.html" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Log In</a>
+            <a href="/pages/auth/signup.html" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700">Sign Up</a>
+        </div>
+       </div>
     </header>
-    <main>
-      <div class="container">
-        <div class="grid-container">
-         <h1>Welcome to JobKorna, where opportunities meet talents. Are you looking for your dream job? Or do you need to find the perfect candidate for a position in your company? You've come to the right place! Search thousands of job listings, or post your own job now. Your next opportunity is just a click away</h1>
+    <main class="container mx-auto p-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <div>
+         <h1 class="text-2xl md:text-4xl font-bold text-gray-800 leading-tight">
+            Welcome to JobKorna, where opportunities meet talents. Are you looking for your dream job? Or do you need to find the perfect candidate for a position in your company? You've come to the right place! Search thousands of job listings, or post your own job now. Your next opportunity is just a click away.
+         </h1>
         </div>
-        <div class="grid-container">
-            <img src="images/computer.jpg" alt="" class="img">
+        <div>
+            <img src="images/computer.jpg" alt="" class="w-full rounded-lg shadow-md">
         </div>
-        </div>
+      </div>
     </main>
-    <section class="grid">
-            <div id="jobs">
-            
-            </div>
+    <section class="container mx-auto p-4">
+        <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+            <input type="text" id="searchQuery" placeholder="Search for jobs..." class="border rounded-lg p-2 w-full md:w-1/2">
+            <button id="searchBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
+        </div>
+        <div id="jobs" class="mt-6">
+            <!-- Job listings will appear here -->
+        </div>
     </section>
-     
-    <script src="script.js"></script>
+    <script>
+        const jobs = document.getElementById('jobs');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchQueryInput = document.getElementById('searchQuery');
+
+        const options = {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': 'ab11d6ea47mshaa5a1960c286d92p141310jsn20556f981e65',
+            'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
+          }
+        };
+
+        // Function to fetch job data based on query
+        async function fetchData(query = 'Developer') {
+    const url = `https://jsearch.p.rapidapi.com/search?query=${query}&page=1&num_pages=10`;
+
+    try {
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            throw new Error('Error fetching data');
+        }
+
+        const result = await response.json();
+
+        if (result.data && result.data.length > 0) {
+            let jobDetails = '<div class="grid gap-4">';
+
+            result.data.forEach((e, index) => {
+                // Display the first two jobs more prominently
+                if (index < 2) {
+                    jobDetails += `
+                    <div class="border rounded-lg shadow-lg p-6 bg-blue-50">
+                        <div class="flex items-center space-x-4">
+                            <img src="${e.employer_logo}" alt="Logo" class="w-14 h-14 object-cover rounded-full">
+                            <div>
+                                <h2 class="text-xl font-bold text-blue-600">${e.job_title}</h2>
+                                <p class="text-md text-gray-800">${e.employer_name}</p>
+                                <p class="text-sm text-gray-500"><i class="fa-solid fa-location-dot"></i> ${e.job_city}, ${e.job_country}</p>
+                            </div>
+                        </div>
+                        <button class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" data-url="${e.job_apply_link}">
+                            Apply for the Job
+                        </button>
+                    </div>`;
+                } else {
+                    jobDetails += `
+                    <div class="border rounded-lg shadow p-4 bg-white">
+                        <div class="flex items-center space-x-4">
+                            <img src="${e.employer_logo}" alt="Logo" class="w-12 h-12 object-cover rounded-full">
+                            <div>
+                                <h2 class="text-lg font-semibold">${e.job_title}</h2>
+                                <p class="text-sm text-gray-600">${e.employer_name}</p>
+                                <p class="text-sm text-gray-500"><i class="fa-solid fa-location-dot"></i> ${e.job_city}, ${e.job_country}</p>
+                            </div>
+                        </div>
+                        <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700" data-url="${e.job_apply_link}">
+                            Apply for the Job
+                        </button>
+                    </div>`;
+                }
+            });
+
+            jobDetails += '</div>';
+
+            jobs.innerHTML = jobDetails;
+
+            const applyButtons = document.querySelectorAll('[data-url]');
+            applyButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const jobURL = button.getAttribute('data-url');
+                    window.location.href = jobURL;
+                });
+            });
+        } else {
+            jobs.innerHTML = '<p class="text-gray-500">No jobs found.</p>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        jobs.innerHTML = '<p class="text-red-500">Failed to load job listings. Please try again later.</p>';
+    }
+}
+
+
+        // Fetch initial data
+        fetchData();
+
+        // Add event listener for the search button
+        searchBtn.addEventListener('click', () => {
+          const searchQuery = searchQueryInput.value.trim();
+
+          // Fetch data based on search query
+          if (searchQuery) {
+            fetchData(searchQuery);
+          } else {
+            alert('Please enter a search term');
+          }
+        });
+    </script>
 </body>
 </html>

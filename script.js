@@ -1,6 +1,7 @@
-const jobs = document.getElementById('jobs')
+const jobs = document.getElementById('jobs');
+const searchBtn = document.getElementById('searchBtn');
+const searchQueryInput = document.getElementById('searchQuery');
 
-const url = 'https://jsearch.p.rapidapi.com/search?query=All&page=1&num_pages=10';
 const options = {
   method: 'GET',
   headers: {
@@ -9,36 +10,80 @@ const options = {
   }
 };
 
-async function fetchData() {
-  const response = await fetch(url, options);
-  const result = await response.json();
+// Function to fetch job data based on query
+async function fetchData(query = 'Developer') {
+  const url = `https://jsearch.p.rapidapi.com/search?query=${query}&page=1&num_pages=10`;
 
-  var jobDetails = `
-  <div class="grids">
-  <ul class="job-list">`;
-  result.data.forEach(e => {
-      jobDetails += `<li class="job-item">
-       <li class="name">${e.employer_name}</li>
-       <li class="logo"><img src="${e.employer_logo}" class="imgs"/></li>
-       <li class="job-title">${e.job_title}</li>
-       <p class="graph">${e.job_description}</p>
-       <button class="buttons" data-url="${e.job_apply_link}">Apply for the Job</button>
-       </li>`;
-  });
+  try {
+    const response = await fetch(url, options);
 
-  jobDetails += `</ul>
-  </div>`;
-  document.getElementById("jobs").innerHTML = jobDetails;
+    // Check if the response is successful
+    if (!response.ok) {
+      throw new Error('Error fetching data');
+    }
 
-  // Attach a click event listener to the "Apply for the Job" buttons.
-  const applyButtons = document.querySelectorAll('.buttons');
-  applyButtons.forEach(button => {
-    button.addEventListener('click', function () {
-      // Retrieve the job's URL from the button's data-url attribute and redirect the user.
-      const jobURL = button.getAttribute('data-url');
-      window.location.href = jobURL;
-    });
-  });
+    const result = await response.json();
+
+    // Ensure we have job data
+    if (result.data && result.data.length > 0) {
+      let jobDetails = `
+      <div class="grids">
+      <ul class="job-list">`;
+
+      result.data.forEach(e => {
+        jobDetails += `
+        <li class="job-item">
+        <div class="job-title">${e.job_title}</div>
+          <div class="job-grid">
+          <div class="logo"><img src="${e.employer_logo}" class="imgs" alt="Logo"/></div>
+          <div class="name">
+          <h1>${e.employer_name}</h1>
+          <div class="icon">
+          <i class="fa-solid fa-location-crosshairs"></i>
+          <p>${e.job_city}, ${e.job_country}</p>
+          </div>
+          </div>
+          </div>
+          <button class="buttons" data-url="${e.job_apply_link}">Apply for the Job</button>
+          </li>`;
+      });
+
+      jobDetails += `</ul>
+      </div>`;
+
+      // Insert job details into the DOM
+      jobs.innerHTML = jobDetails;
+
+      // Attach event listeners to the "Apply for the Job" buttons
+      const applyButtons = document.querySelectorAll('.buttons');
+      applyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const jobURL = button.getAttribute('data-url');
+          window.location.href = jobURL;
+        });
+      });
+    } else {
+      // If no job data, display a message
+      jobs.innerHTML = '<p>No jobs found.</p>';
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+    jobs.innerHTML = '<p>Failed to load job listings. Please try again later.</p>';
+  }
 }
 
+// Fetch initial data
 fetchData();
+
+// Add event listener for the search button
+searchBtn.addEventListener('click', () => {
+  const searchQuery = searchQueryInput.value.trim();
+  
+  // Fetch data based on search query
+  if (searchQuery) {
+    fetchData(searchQuery);
+  } else {
+    alert('Please enter a search term');
+  }
+});

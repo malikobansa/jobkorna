@@ -1,116 +1,223 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
 
-*{
+* {
     box-sizing: border-box;
+    margin: 0;
 }
 
-body{
+body {
     font-family: 'Rubik', sans-serif;
 }
 
-header ul li{
-    display: inline-block;
+/* Navbar Styling */
+nav {
+    background-color: #F1F2F4;
+    padding: 20px;
 }
 
-header ul li a{
-    text-decoration: none;
+nav ul {
+    display: flex;
+    flex-direction: row;
     list-style: none;
+    justify-content: center;
+    gap: 50px;
+}
+
+nav ul li a {
+    text-decoration: none;
     color: #000;
 }
 
-.list{
-    margin-left: 900px;
+nav ul li:hover {
+    border-bottom: 2px solid blue;
+    transition: 0.4s ease-in-out;
 }
 
-.signBtn{
-    margin-left: 50px;
+/* Header Styling */
+header {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.signBtn button{
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.logo a {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+    text-decoration: none;
+}
+
+/* Search Bar Styling */
+.search-bar {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 100px;
+}
+
+.search-bar i {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 500px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Auth Button Styling */
+.auth-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.logBtn button {
+    padding: 10px 20px;
+    background-color: gray;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.signBtn button {
     padding: 10px 20px;
     background-color: #000;
     color: #fff;
-    border: 0px;
+    border: none;
     border-radius: 20px;
+    cursor: pointer;
 }
 
-.signBtn button:hover{
-    padding: 10px 20px;
+.signBtn button:hover {
     background-color: darkblue;
-    color: #fff;
-    transition: all .4s ease-in;
-    border: 0px;
-    border-radius: 20px;
+    transition: all 0.4s ease-in-out;
 }
 
-.img{
-    width: 600px;
-    height: 500px;
-    border-radius: 50px;
+/* Main Content */
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px;
 }
 
-.api{
-    color: #000;
+.grid-container {
+    width: 50%;
 }
 
-.container{
-   display: flex;
-   flex-direction: row;
-   justify-content: center;
-   align-items: center;
+h1 {
+    font-size: 20px;
+    width: 400px;
 }
 
-.grid-container{
-    margin-left: 40px;
+.img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
 
-h1{
-  font-size: 20px;
-  width: 400px;
-}
-
-
-.jobs-container{
-    width: 500px;
-    height: 500px;
-    color: #000;
-}
-
-.imgs{
-    width: 200px;
-    height: 100px;
-}
-
-.jobs .name{
-  font-size: 40px;
-}
-
-.grid{
+/* Jobs Grid */
+.grid {
     display: flex;
     flex-wrap: wrap;
-    align-items: space-between;
-    justify-content: center;
-    margin: 0 auto;
-    max-width: 1200px;
+    margin-top: 40px;
 }
 
-#jobs{
+#jobs {
     width: 400px;
     height: 400px;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-#jobs ul li{
-    list-style-type: none;
+    .search-bar {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .auth-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grid-container {
+        width: 100%;
+    }
 }
 
-.buttons{
-    background-color: black;
-    color: #fff;
-    cursor: pointer;
+.job-grid{
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.imgs{
+    width: 70px;
+    height: 70px;
+}
+
+.name{
+    display: flex;
+    flex-direction: column;
+}
+
+.icon{
+    display: flex;
+    gap: 10px;
+}
+
+.job-list{
+    display: grid;
+    grid-template-columns: 300px 300px 300px;
+    gap: 100px;
+    list-style: none;
+}
+
+.job-item{
+    border: 2px solid gray;
+    padding: 20px;
 }
 
 
+.grid{
+    margin-left: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
 
+.search{
+    margin-left: 470px;
+}
 
-  
+.name h1{
+    width: 200px;  
+}
+
+@media only screen and (max-width: 600px) {
+    .grid{
+        
+    }
+  }
